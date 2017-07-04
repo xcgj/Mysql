@@ -1,0 +1,208 @@
+课堂练习：
+创建一个以自己名字命名的数据库，字符集为utf8,
+== create database 陈琳耀  character set utf8;
+
+在该数据库里创建一张表，表名为test，字段有id,name数据类型分别是int,varchar(20)
+== use 陈琳耀
+== create table test(id int, name varchar(20));
+
+插入2条数据,id为1和2，名字为赵兄，托偶。
+== insert into test values(1, '赵兄');
+== insert into test values(2, '托偶');
+
+增加一个字段，名为sal,数据类型为float,
+== alter table test add column sal float;
+
+添加数据赵兄为1200.28,托偶为1100.35
+== update test set sal=1200.28 where id=1;
+== update test set sal=1100.35 where name='托偶';
+
+修改表的名字为mytable
+== rename table test to mytable;
+
+插入1条数据，id为3，名为邦尼，sal为1200.28
+== insert into mytable values(3, '邦尼', 1200.28);
+
+增加一个字段，名为comm，数据类型为int,
+== alter table mytable add column comm int;
+
+添加数据分别为1000,1500，1000
+== update mytable set comm=1000 where id = 1;
+== update mytable set comm=1500 where id = 2;
+== update mytable set comm=1000 where id = 3;
+
+修改comm的数据类型为float(8,2)
+== alter table mytable modify column comm float(8,2);
+
+修改sal为1100.35的员工的comm为1000.35
+== alter table mytable modify column sal float(8,2);//必须先转换sal的类型，否则下边的where不会生效
+== update mytable set comm=1000.35 where sal=1100.35;(问题)
+
+插入1条数据，id=4,名为班典石,sal为1300，comm为2000
+==  insert into mytable values(4, '班典石', 1300, 2000);
+
+删除sal字段，删除mytable表，删除数据库
+== alter table mytable drop column sal;
+== drop table mytable;
+== drop database 陈琳耀
+
+综合案例：
+创建一个学生表，插入数据
+create table student(
+id int,
+name varchar(20),
+chinese int,
+english int,
+math int
+);
+insert into student(id,name,chinese,english,math) values(1,'范建',80,85,90);
+insert into student(id,name,chinese,english,math) values(2,'罗况',90,95,95);
+insert into student(id,name,chinese,english,math) values(3,'杜子腾',80,96,96);
+insert into student(id,name,chinese,english,math) values(4,'范冰',81,97,85);
+insert into student(id,name,chinese,english,math) values(5,'申晶冰',85,84,90);
+insert into student(id,name,chinese,english,math) values(6,'郝丽海',92,85,87);
+insert into student(id,name,chinese,english,math) values(7,'郭迪辉',75,81,80);
+insert into student(id,name,chinese,english,math) values(8,'拎壶冲',77,80,79);
+insert into student(id,name,chinese,english,math) values(9,'任我行',95,85,85);
+insert into student(id,name,chinese,english,math) values(10,'史泰香',94,85,84);
+
+查询表中所有学生的信息
+		查询表中所有学生的姓名和对应的英语成绩。
+== select name, english from student;
+
+		在所有学生英语分数上加10分特长分。
+== select name, english+10 newEnglish from student;
+
+		统计每个学生的总分。
+== select name, english+chinese+math totalScore from student;
+
+		使用别名表示学生分数
+== select name, english+chinese+math totalScore from student;
+ 
+		查询姓名为范建的学生成绩
+== select * from student where name='范建';
+
+		查询英语成绩大于90分的同学
+== select * from student where english>90;
+
+		查询总分大于250分的所有同学
+== select * from student  where chinese+english+math > 250;
+
+		查询英语分数在 85－95之间的同学。
+== select * from student where english between 85 and 95;
+
+		查询数学分数为84,90,91的同学。
+== select * from student where math=84 or math=90 or math=91;
+
+Select *from student where math=84 or math=90 or math=91
+Select *from student where math in(84,90,91)
+
+
+		查询所有姓范的学生成绩。
+== select * from student where name like '范%';
+
+		查询数学分>85，语文分>90的同学。
+== select * from student where math>85 and chinese>90;
+
+		对数学成绩排序后输出。
+== select * from student order by math;
+
+		查询数学成绩排名前三的同学信息
+== Select *from student order by math desc limit 3
+
+		对总分排序后输出，然后再按从高到低的顺序输出
+== select name,chinese+english+math ts from student order by ts desc;
+== select * from student order by chinese+english+math desc;
+
+		对姓范的学生总成绩排序输出
+== select name,chinese+english+math ts from student where name like '范%' order by ts desc;
+
+Select *from student where name like ‘范%’ order by math+Chinese+english  desc
+		统计一个班级共有多少学生？
+== select count(name) from student;
+
+		统计数学成绩大于90的学生有多少个？
+== select count(name) from student where math>90;
+
+Select count(name) from student where math>90
+		统计总分大于250的人数有多少？
+== select count(name) from student where chinese+math+english > 250;
+
+		统计一个班级数学总成绩？
+== select sum(math) from student;
+
+		统计一个班级语文、英语、数学各科的总成绩
+== select sum(math) sm, sum(english) se, sum(chinese) sc from student;
+
+		统计一个班级语文、英语、数学的成绩总和
+== select sum(math)+sum(english)+sum(chinese) from student;
+==  select sum(math+english+chinese) from student;
+
+		求一个班级数学平均分？
+==  select avg(math) from student;
+
+		求一个班级总分平均分
+== select avg(math+english+chinese) from student;
+
+Select avg(math+Chinese+english) from student;
+		求班级最高分和最低分
+== SELECT min(math+chinese+english), max(math+chinese+english) FROM student;//总分
+==  SELECT min(s.score), max(s.score) FROM
+(
+select id, name, chinese score from student
+UNION
+select id, name, math score from student
+UNION
+select id, name, english score from student
+) s  //单科
+{
+SELECT least(a, b, c) from
+(
+SELECT min(math) as a, min(chinese) as b, min(english) as c
+FROM student
+);
+
+
+SELECT min(a, b, c, d, e, f) from
+(select max(chinese) a,min(chinese) b,max(english) c,min(english) d,max(math) e,min(math) f 
+from student);
+}
+
+4	分组数据
+4.1	以上面的案例为基础
+
+为学生表，增加一个班级列，练习分组查询。
+			alter table student add column class_id int;	
+		注意语法：Oracle中不能有“column”关键字，MySQL中有没有“column”都可以执行。
+		更新表：
+			update student set class_id=1 where id<=5;
+			update student set class_id=2 where id>5;
+			(update student set class_id=2 where id between 6 and 10;)
+		查出各个班的总分，最高分。
+== SELECT class_id, sum(english+math+chinese) sum, 
+max(english+math+chinese) max
+from student 
+group by class_id;
+
+		求各个班级英语的平均分：
+== select class_id, avg(english) from student group by class_id;
+
+			select class_id, avg(english) 
+			from student
+			group by class_id
+		如根据组函数的语法要求，将select后增加name列，而不加至group by 之后：
+			select name, class_id, avg(english)
+			from student
+			group by class_id;//------------运行错误
+		会发现MySQL检查不出错误。相比Oracle数据库，MySQL分组检查不严格。
+			select sum(math+chinese+english),max(math+chinese+english) from student group by class_id;
+		查询出班级总分大于1300分的班级ID
+== select class_id, sum(math+english+chinese) sum
+from student
+group by class_id
+having sum > 1300;
+
+
+			select class_id from student group by class_id having sum(math+chinese+english)>1300;
+			select class_id from student where sum(math+chinese+english)>1300 group by class_id ;//-------------------运行错误
+组函数可以应用于Having中，但不能用于where子句中。
